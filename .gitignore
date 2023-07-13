@@ -1,1 +1,4 @@
 key
+logs
+dags/__pycache__
+.env

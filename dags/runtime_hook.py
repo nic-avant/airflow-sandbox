@@ -3,8 +3,8 @@ import pdpyras
 import os
 
 
-class PagerDutyHook(BaseHook):
-    """Hook for PagerDuty communication"""
+class RuntimeHook(BaseHook):
+    """Hook for runtime actions"""
 
     avant_conn_name = "avant_pagerduty"
 

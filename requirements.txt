@@ -1,0 +1,2 @@
+# for local testing
+apache-airflow==2.6.3  # matching what I have in docker-compose

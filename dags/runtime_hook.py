@@ -17,25 +17,27 @@ class RuntimeHook(BaseHook):
         # print(self.avant_routing_key)
 
     def on_failure_callback(self, ctx, **kwargs):
-        ti = ctx["task_instance"]
-        run_id = ctx["run_id"]
+        # ti = ctx["task_instance"]
+        # run_id = ctx["run_id"]
         return self._invoke(
-            dag_id=ti.dag_id,
-            run_id=run_id,
-            task_id=ti.task_id,
-            log_url=ti.log_url,
-            action="trigger"
+            '1', '2', '3', '4', '5'
+            # dag_id=ti.dag_id,
+            # run_id=run_id,
+            # task_id=ti.task_id,
+            # log_url=ti.log_url,
+            # action="trigger"
         )
 
     def on_success_callback(self, ctx, **kwargs):
-        ti = ctx["task_instance"]
-        run_id = ctx["run_id"]
+        # ti = ctx["task_instance"]
+        # run_id = ctx["run_id"]
         return self._invoke(
-            dag_id=ti.dag_id,
-            run_id=run_id,
-            task_id=ti.task_id,
-            log_url=ti.log_url,
-            action="resolve"
+            '1', '2', '3', '4', '5'
+            # dag_id=ti.dag_id,
+            # run_id=run_id,
+            # task_id=ti.task_id,
+            # log_url=ti.log_url,
+            # action="resolve"
         )
 
     def _invoke(self, dag_id, run_id, task_id, log_url, action):

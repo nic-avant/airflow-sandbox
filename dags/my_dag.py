@@ -6,7 +6,7 @@ from airflow.operators.python import PythonOperator
 from airflow import DAG
 
 from airflow.hooks.base_hook import BaseHook
-import pdpyras
+# import pdpyras
 import os
 
 
@@ -29,7 +29,7 @@ class RuntimeHook(BaseHook):
         )
 
     def _invoke(self, dag_id, run_id, task_id, log_url, action):
-        print(dag_id)
+        print('INVOKED THE RUNTIMEHOOK')
 
 
 def hello_world():

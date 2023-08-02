@@ -6,9 +6,8 @@ from airflow.operators.python import PythonOperator
 from airflow import DAG
 
 from airflow.hooks.base_hook import BaseHook
-# import pdpyras
-import os
 
+from airflow.operators.empty import EmptyOperator
 
 class RuntimeHook(BaseHook):
     """Hook for runtime event handling"""
@@ -17,11 +16,6 @@ class RuntimeHook(BaseHook):
 
     def __init__(self, *args, **kwargs):  # pylint: disable=unused-argument
         self.foo = 'foo'
-        # avant_conn = self.get_connection(self.avant_conn_name)
-        # self.avant_routing_key = avant_conn.extra_dejson.get('Password')
-        # print(avant_conn)
-        # print(type(avant_conn))
-        # print(self.avant_routing_key)
 
     def on_failure_callback(self, ctx, **kwargs):
         ti = ctx["task_instance"]
@@ -50,55 +44,30 @@ class RuntimeHook(BaseHook):
         if action not in ('trigger', 'resolve'):
             raise ValueError("action must be 'trigger' or 'resolve'")
 
-        print(f'Triggering {dag_id=}')
+        print('Triggering a dag')
 
-        # dedup_key = str(hash(dag_id + run_id + task_id))
-        # base_message = f' incident event in Avant PagerDuty for dag_id={dag_id} and run_id={run_id}'
-        #
-        # try:
-        #     events_session = pdpyras.EventsAPISession(self.avant_routing_key)
-        #     if action == 'trigger':
-        #         print('Triggering ' + base_message)
-        #         message = """
-        #         Avant PagerDuty: {} Airflow Campaign Partner01 DAG '{}' failed on task '{}'.
-        #         See Airflow logs for run_id='{}'
-        #         """.format(
-        #             'TEST',
-        #             dag_id,
-        #             task_id,
-        #             run_id
-        #         )
-        #         details = {
-        #             "dag": dag_id,
-        #             "task": task_id,
-        #             "run": run_id
-        #         }
-        #         events_session.trigger(summary=message,
-        #                                source='Airflow Campaign Partner01',
-        #                                severity='warning',
-        #                                dedup_key=dedup_key,
-        #                                links=[{'href': log_url}],
-        #                                custom_details=details)
-        #     else:
-        #         print('Resolving ' + base_message)
-        #         events_session.resolve(dedup_key)
-        #     print(f'Successfully executed PagerDuty action={action}')
-        #
-        # except Exception as e:
-        #     print(e)
-
+def alert_me_dammit(ctxt):
+    print('------------------------------------------')
+    print('------------------------------------------')
+    print(f"DAG has succeeded, run_id: {ctxt['run_id']}")
+    print('------------------------------------------')
+    print('------------------------------------------')
 
 def hello_world():
     print("Hello, World!")
+
 
 with DAG(
     dag_id="hello_world_dag",
     start_date=datetime(2021, 1, 1),
     schedule_interval="@hourly",
     catchup=False,
-    on_failure_callback=RuntimeHook().on_failure_callback,
-    on_success_callback=RuntimeHook().on_success_callback,
+    # on_failure_callback=RuntimeHook().on_failure_callback,
+    # on_success_callback=RuntimeHook().on_success_callback,
+    on_success_callback=alert_me_dammit,
 ) as dag:
+
+    task0 = EmptyOperator(task_id="id0")
     task1 = PythonOperator(task_id="hello_world", python_callable=hello_world)
 
-    task1
+    task0 >> task1

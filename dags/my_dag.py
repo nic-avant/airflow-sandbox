@@ -52,6 +52,9 @@ def alert_me_dammit(ctxt):
     print(f"DAG has succeeded, run_id: {ctxt['run_id']}")
     print('------------------------------------------')
     print('------------------------------------------')
+    print(f"{ctxt=}")
+    print('------------------------------------------')
+    print('------------------------------------------')
 
 def hello_world():
     print("Hello, World!")

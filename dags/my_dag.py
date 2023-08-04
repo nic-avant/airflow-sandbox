@@ -10,7 +10,10 @@ from airflow.hooks.base_hook import BaseHook
 from airflow.operators.empty import EmptyOperator
 import requests
 
-URL ="https://hc-ping.com/844d7hQguj_-hZ26ByMAeA/data-80123"
+# I think this is all that really needs to be configured...
+PROJECT_PING_KEY = "844d7hQguj_-hZ26ByMAeA"
+SLUG = "data-80123"
+URL =f"https://hc-ping.com/{PROJECT_PING_KEY}/{SLUG}"
 class RuntimeHook(BaseHook):
     """Hook for runtime event handling"""
 
@@ -41,14 +44,16 @@ class RuntimeHook(BaseHook):
             action="resolve"
         )
 
+    def hcio_alert(self, action: str):
+        # hcio alert
+        requests.get(URL if action=='resolve' else URL + "/fail")
 
     def _invoke(self, dag_id, run_id, task_id, log_url, action):
         # severity can be critical, error, warning or info
         if action not in ('trigger', 'resolve'):
             raise ValueError("action must be 'trigger' or 'resolve'")
-        # hcio alert
-        requests.get(URL if action=='resolve' else URL + "/fail")
 
+        self.hcio_alert(action)
         print('Triggering a dag')
 
 def alert_me_dammit(ctxt):

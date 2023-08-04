@@ -8,7 +8,9 @@ from airflow import DAG
 from airflow.hooks.base_hook import BaseHook
 
 from airflow.operators.empty import EmptyOperator
+import requests
 
+URL ="https://hc-ping.com/844d7hQguj_-hZ26ByMAeA/data-80123"
 class RuntimeHook(BaseHook):
     """Hook for runtime event handling"""
 
@@ -39,10 +41,13 @@ class RuntimeHook(BaseHook):
             action="resolve"
         )
 
+
     def _invoke(self, dag_id, run_id, task_id, log_url, action):
         # severity can be critical, error, warning or info
         if action not in ('trigger', 'resolve'):
             raise ValueError("action must be 'trigger' or 'resolve'")
+        # hcio alert
+        requests.get(URL if action=='resolve' else URL + "/fail")
 
         print('Triggering a dag')
 
@@ -65,7 +70,7 @@ with DAG(
     start_date=datetime(2021, 1, 1),
     schedule_interval="@hourly",
     catchup=False,
-    # on_failure_callback=RuntimeHook().on_failure_callback,
+    on_failure_callback=RuntimeHook().on_failure_callback,
     # on_success_callback=RuntimeHook().on_success_callback,
     on_success_callback=alert_me_dammit,
 ) as dag:

@@ -56,17 +56,9 @@ class RuntimeHook(BaseHook):
         self.hcio_alert(action)
         print('Triggering a dag')
 
-def alert_me_dammit(ctxt):
-    print('------------------------------------------')
-    print('------------------------------------------')
-    print(f"DAG has succeeded, run_id: {ctxt['run_id']}")
-    print('------------------------------------------')
-    print('------------------------------------------')
-    print(f"{ctxt}")
-    print('------------------------------------------')
-    print('------------------------------------------')
 
 def hello_world():
+    # raise ValueError()
     print("Hello, World!")
 
 
@@ -76,8 +68,7 @@ with DAG(
     schedule_interval="@hourly",
     catchup=False,
     on_failure_callback=RuntimeHook().on_failure_callback,
-    # on_success_callback=RuntimeHook().on_success_callback,
-    on_success_callback=alert_me_dammit,
+    on_success_callback=RuntimeHook().on_success_callback,
 ) as dag:
 
     task0 = EmptyOperator(task_id="id0")

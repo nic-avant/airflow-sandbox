@@ -1,5 +1,6 @@
 "hello world airflow dag"
 from datetime import datetime
+from functools import wraps
 
 from airflow.operators.python import PythonOperator
 
@@ -62,6 +63,36 @@ def hello_world():
     print("Hello, World!")
 
 
+def hcio_decorator(slug: str):
+    """
+    Could use a decorator like this if tasks are often python functions, then
+    just decorading with the slug would be easy implementation per operator
+    """
+
+    # TODO: get this from env variable/vault/airflow config?
+    project_ping_key = "844d7hQguj_-hZ26ByMAeA"
+
+    url =f"https://hc-ping.com/{project_ping_key}/{slug}"
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            try:
+                func(*args, **kwargs)
+                requests.get(url)
+            # TODO: what to catch?
+            except Exception as e:
+                # can post arbitrary data to hcio endpoint
+                requests.post(url + "/fail", data={'error': e})
+        return wrapper
+
+    return decorator
+
+@hcio_decorator(slug='data-80123')
+def talk():
+    """talk docstring"""
+    print("Did I hcio?")
+    raise ValueError('raised ValueError to test posting data')
+
 with DAG(
     dag_id="hello_world_dag",
     start_date=datetime(2021, 1, 1),
@@ -73,5 +104,6 @@ with DAG(
 
     task0 = EmptyOperator(task_id="id0")
     task1 = PythonOperator(task_id="hello_world", python_callable=hello_world)
+    task2 = PythonOperator(task_id="talk", python_callable=talk)
 
-    task0 >> task1
+    task0 >> task1 >> task2

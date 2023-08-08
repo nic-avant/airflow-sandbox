@@ -24,6 +24,7 @@ def hcio_dag_alert(slug: str = 'data-80123', **kwargs):
         slug: slug id of hcio endpoint to use - endpoints are to be created in avant-data-gitops repo
         **kwargs: Airflow context
     """
+    print("DAG ALERT TASK")
     success = kwargs.get('success', True)
     print(kwargs)
 
@@ -71,11 +72,13 @@ def hcio_task_alert_callback_base(ctxt: dict, slug: str, success: bool):
 def hcio_task_on_success_callback(ctxt: dict):
     """ user-defined function to pass hcio slug to common hcio utility function """
     slug = "data-80123"
+    print("TASK ON SUCCESS CALLBACK")
     return hcio_task_alert_callback_base(ctxt, slug=slug, success=True)
 
 def hcio_task_on_failure_callback(ctxt: dict):
     """ user-defined function to pass hcio slug to common hcio utility function """
     slug = "data-80123"
+    print("TASK ON FAILURE CALLBACK")
     return hcio_task_alert_callback_base(ctxt, slug=slug, success=False)
 
 

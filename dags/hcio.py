@@ -81,3 +81,25 @@ def hcio_task_alert_callback_base(ctxt: dict, slug: str, success: bool):
     # TODO: I hope that airflow variables are in the config to extract project ping key from
     url =f"https://hc-ping.com/{project_ping_key}/{slug}"
     requests.get(url if success is True else url + "/fail")
+
+
+# TODO: remove default slug value
+def hcio_task(slug: str = 'data-80123', **kwargs):
+    """Function to be used a python_callable for task to issue hcio pings
+
+    NOTES: Lucho said from his perspective this is a good enough solution
+
+    Args:
+        slug: slug id of hcio endpoint to use - endpoints are to be created in avant-data-gitops repo
+        **kwargs: Airflow context
+    """
+    from airflow.models import Variable
+    project_ping_key = Variable.get("HCIO_PROJECT_PING_KEY")
+    print("HCIO TASK")
+    # Not sure if this is really useful
+    success = kwargs.get('success', True)
+    # Can extract data from the conf if we want to post arbitrary data to an hcio endpoint
+    conf: AirflowConfigParser = kwargs.get('conf')  # noqa: F841
+
+    url =f"https://hc-ping.com/{project_ping_key}/{slug}"
+    requests.get(url if success is True else url + "/fail")

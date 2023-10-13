@@ -3,11 +3,8 @@ import requests
 
 
 def get_project_ping_key():
-    # from airflow.models import Variable
-    # return Variable.get("HCIO_PROJECT_PING_KEY")
-    # TODO: doing this just for exploring hcio
-    PROJECT_PING_KEY = '844d7hQguj_-hZ26ByMAeA'
-    return PROJECT_PING_KEY
+    from airflow.models import Variable
+    return Variable.get("HCIO_PROJECT_PING_KEY")
 
 
 def hcio_task_alert_callback_base(ctxt: dict, slug: str, success: bool):

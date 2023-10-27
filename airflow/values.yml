@@ -3,7 +3,6 @@ config:
   webserver:
     expose_config: 'True'
 webserverSecretKey: af67ea96c649d2448f86e6f0893e4f1f
-# executor: "CeleryExecutor"
 executor: KubernetesExecutor
 dags:
   persistence:
@@ -19,5 +18,6 @@ image:
   pullPolicy: IfNotPresent
   uid: 50000
   gid: 0
+# Airflow Dag Processor Config
 dagProcessor:
   enabled: true

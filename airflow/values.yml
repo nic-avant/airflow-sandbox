@@ -13,3 +13,11 @@ dags:
     existingClaim: airflow-dags-pvc
     ## optional subpath for dag volume mount
     subPath:
+image:
+  repository: avant.jfrog.io/shared-images/avant-airflow
+  tag: dev
+  pullPolicy: IfNotPresent
+  uid: 50000
+  gid: 0
+dagProcessor:
+  enabled: true

@@ -1,17 +1,19 @@
 # Run Airflow 2 Locally
 
-According to the official [Airflow Installation](https://airflow.apache.org/docs/apache-airflow/stable/installation/index.html#) docs, there are several ways to install Airflow 2 locally. To encourage standardization of local environments at Avant, we offer our own instructions for installing Airflow. 
+According to the official [Airflow Installation](https://airflow.apache.org/docs/apache-airflow/stable/installation/index.html#) docs, there are several ways to install Airflow 2 locally. To encourage standardization of local environments at Avant, we offer our own instructions for installing Airflow.
 
 ## Prerequisites
+
 ### \[Optional\] Install your preferred package manager
 
-* [Homebrew](https://brew.sh/) (macOS, Linux)
-* [Scoop](https://scoop.sh/) (Windows)
-* [Chocolatey](https://chocolatey.org/install) (Windows)
+- [Homebrew](https://brew.sh/) (macOS, Linux)
+- [Scoop](https://scoop.sh/) (Windows)
+- [Chocolatey](https://chocolatey.org/install) (Windows)
 
 ### Install K9s
 
 **macOS**
+
 ```bash
 # Via Homebrew
 brew install derailed/k9s/k9s
@@ -21,6 +23,7 @@ sudo port install k9s
 ```
 
 **Linux**
+
 ```bash
 # Via LinuxBrew
 brew install derailed/k9s/k9s
@@ -30,6 +33,7 @@ pacman -S k9s
 ```
 
 **Windows**
+
 ```bash
 # Via Scoop
 scoop install k9s
@@ -41,6 +45,7 @@ choco install k9s
 ### Install Helm
 
 **macOS**
+
 ```bash
 # Via Homebrew
 brew install helm
@@ -50,6 +55,7 @@ sudo port install helm-3.11
 ```
 
 **Linux**
+
 ```bash
 # Via LinuxBrew
 brew install helm
@@ -59,6 +65,7 @@ pacman -S helm
 ```
 
 **Windows**
+
 ```bash
 # Via Scoop
 scoop install helm
@@ -69,7 +76,7 @@ choco install kubernetes-helm
 
 ### Install Docker Desktop
 
-Install [Docker Desktop](https://www.docker.com/products/docker-desktop/), and use your Avant email to create a Docker account. 
+Install [Docker Desktop](https://www.docker.com/products/docker-desktop/), and use your Avant email to create a Docker account.
 
 ### Clone the `airflow-local` repository
 
@@ -89,8 +96,8 @@ cp -r airflow-local/example-dags/* ~/${DAGS_DIR}
 
 ### Set up volume mounting
 
-* Update Docker Desktop settings to allow mounting the `~/Documents/airflow-dags` directory (see screencap)
-* In `airflow-volume.yml,` set the "PersistentVolume" configuration for `spec.hostPath.path` to `~/Documents/airflow-dags`
+- Update Docker Desktop settings to allow mounting the `~/Documents/airflow-dags` directory (see screencap)
+- In `airflow-volume.yml,` set the "PersistentVolume" configuration for `spec.hostPath.path` to `~/Documents/airflow-dags`
 
 ![alt text](images/mount_directory.png)
 
@@ -103,7 +110,7 @@ helm repo update
 helm install airflow apache-airflow/airflow --version 1.6.0 -f values.yml
 ```
 
-You should now have an installed Airflow chart (with release name "airflow" and namespace "default"). Confirm this by running `helm list`. 
+You should now have an installed Airflow chart (with release name "airflow" and namespace "default"). Confirm this by running `helm list`.
 
 ```bash
 NAME      	NAMESPACE	STATUS  	CHART        	APP VERSION
@@ -122,32 +129,35 @@ k9s
 
 ### "Port-Forward" `my-airflow-webserver`
 
-* Scroll down to `my-airflow-webserver` service
-* Type `<shift>` + `<f>`
-* Select `OK`
+- Scroll down to `my-airflow-webserver` service
+- Type `<shift>` + `<f>`
+- Select `OK`
 
 ![alt text](images/k9s.png)
 
 ### Open the Airflow UI
 
-* In your web browser, go to [http://localhost:8080/home](http://localhost:8080/home) 
-* Log into Airflow with username "admin" and password "admin"
+- In your web browser, go to [http://localhost:8080/home](http://localhost:8080/home)
+- Log into Airflow with username "admin" and password "admin"
+
+- You might have to exec into the webserver and run `airflow users  create --role Admin --username admin --email admin --firstname admin --lastname admin --password admin
+`
 
 ### Do stuff
 
 **Select an existing DAG and trigger it from the UI**
 
-* Click on DAG in the home page
-* Click "play" button in the DAGs page
+- Click on DAG in the home page
+- Click "play" button in the DAGs page
 
 ![alt text](images/trigger_dag.png)
 
 **Create a new DAG and trigger it from the command line**
 
-* Create new python script (**REMEMBER**: DAG files are stored in `~/Documents/airflow-dags`)
-* In `k9s`, select `my-airflow-webserver` service (using `<return>`)
-* Access the shell of the running pod (using `<s>`)
-* Run ```airflow dags trigger <new_dag_id>```
+- Create new python script (**REMEMBER**: DAG files are stored in `~/Documents/airflow-dags`)
+- In `k9s`, select `my-airflow-webserver` service (using `<return>`)
+- Access the shell of the running pod (using `<s>`)
+- Run `airflow dags trigger <new_dag_id>`
 
 ![alt text](images/create_new_dag.png)
 
@@ -192,4 +202,3 @@ helm install airflow apache-airflow/airflow \
 ```
 
 **ref**: https://github.com/airflow-helm/charts/tree/main/charts/airflow#frequently-asked-questions
-

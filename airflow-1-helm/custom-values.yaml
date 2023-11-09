@@ -3,6 +3,9 @@
 ## CONFIG | Airflow Configs
 ########################################
 airflow:
+  extraInitContainers:
+    - name: init-db
+      command: [bash, -c, airflow db init]
   ## if we use legacy 1.10 airflow commands
   legacyCommands: true
 

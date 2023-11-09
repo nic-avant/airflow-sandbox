@@ -9,10 +9,11 @@ helm upgrade \
     --namespace airflow \
     --version 1.11.0 \
     -f values.yaml \
-    --set images.airflow.repository=avant.jfrog.io/shared-images/avant-airflow \
-    --set images.airflow.tag=dev \
+    \
     --set dagProcessor.enabled=true \
-    --set webserver.replicas=1 \
-    --set triggerer.replicas=1 \
-    --set scheduler.replicas=1 \
-    --wait=true
+    \
+    --wait=true # --set images.airflow.repository=avant.jfrog.io/shared-images/avant-airflow \
+    # --set images.airflow.tag=dev \
+    # --set webserver.replicas=1 \
+    # --set triggerer.replicas=1 \
+    # --set scheduler.replicas=1 \

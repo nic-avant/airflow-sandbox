@@ -33,6 +33,8 @@ airflow:
   config:
     AIRFLOW__WEBSERVER__EXPOSE_CONFIG: 'True'
     AIRFLOW__CORE__LOAD_EXAMPLES: 'True'
+    AIRFLOW__API__AUTH_BACKEND: 'airflow.api.auth.backend.default'
+    AIRFLOW__KUBERNETES__NAMESPACE: 'airflow-1-cluster'
 
   ## a list of users to create
   ## [FAQ] https://github.com/airflow-helm/charts/blob/main/charts/airflow/docs/faq/security/airflow-users.md
@@ -144,7 +146,7 @@ web:
   service:
     type: ClusterIP
     externalPort: 8080
-    
+
   ## configs for the web Pods' readiness probe
   ##
   readinessProbe:

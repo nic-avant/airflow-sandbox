@@ -6,8 +6,8 @@ helm repo add airflow-stable https://airflow-helm.github.io/charts
 helm repo update
 
 ## set the release-name & namespace
-export AIRFLOW_NAME="airflowONE"
-export AIRFLOW_NAMESPACE="airflowONE"
+export AIRFLOW_NAME="airflowone"
+export AIRFLOW_NAMESPACE="airflowone"
 
 ## create the namespace
 kubectl create ns "$AIRFLOW_NAMESPACE"

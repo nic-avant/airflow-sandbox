@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # set the release-name & namespace
-export AIRFLOW_NAME="airflow-1-cluster"
-export AIRFLOW_NAMESPACE="airflow-1-cluster"
+export AIRFLOW_NAME="airflowONE"
+export AIRFLOW_NAMESPACE="airflowONE"
 helm upgrade \
     "$AIRFLOW_NAME" \
     airflow-stable/airflow \

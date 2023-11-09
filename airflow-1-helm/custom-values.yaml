@@ -35,7 +35,7 @@ airflow:
     AIRFLOW__CORE__LOAD_EXAMPLES: 'True'
     AIRFLOW__ENABLE_EXPERIMENTAL_API: 'True'
     AIRFLOW__API__AUTH_BACKEND: airflow.api.auth.backend.default
-    AIRFLOW__KUBERNETES__NAMESPACE: airflow-1-cluster
+    AIRFLOW__KUBERNETES__NAMESPACE: airflowONE
 
   ## a list of users to create
   ## [FAQ] https://github.com/airflow-helm/charts/blob/main/charts/airflow/docs/faq/security/airflow-users.md

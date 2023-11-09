@@ -1,1 +1,1 @@
-I had to shell into one of the airflow pods that was running and run `airflow db init`
+Just run ./deploy.sh to spin up airflow 1 in a namespace called `airflowONE`

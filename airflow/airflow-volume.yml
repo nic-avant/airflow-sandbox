@@ -1,4 +1,5 @@
-### PersistentVolume ###
+---
+### PersistentVolume  ###
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -9,23 +10,21 @@ spec:
   storageClassName: hostpath
   capacity:
     storage: 1Gi
-  accessModes:
-    - ReadWriteMany
+  accessModes: [ReadWriteMany]
   hostPath:
     path: /Users/npayne81/work/airflow-sandbox/airflow/example-dags
   persistentVolumeReclaimPolicy: Retain
-
 ---
-### PersistentVolumeClaim ###
+### PersistentVolumeClaim  ###
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: airflow-dags-pvc
+  namespace: airflow
 spec:
   storageClassName: hostpath
   volumeName: airflow-dags
-  accessModes:
-    - ReadWriteMany
+  accessModes: [ReadWriteMany]
   resources:
     requests:
       storage: 1Gi

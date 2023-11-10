@@ -36,6 +36,7 @@ airflow:
     AIRFLOW__ENABLE_EXPERIMENTAL_API: 'True'
     AIRFLOW__API__AUTH_BACKEND: airflow.api.auth.backend.default
     AIRFLOW__KUBERNETES__NAMESPACE: airflowone
+    AIRFLOW__LOGGING__LOGGING_LEVEL: DEBUG
 
   ## a list of users to create
   ## [FAQ] https://github.com/airflow-helm/charts/blob/main/charts/airflow/docs/faq/security/airflow-users.md

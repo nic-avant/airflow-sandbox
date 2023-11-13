@@ -1,13 +1,14 @@
-"Testing script for DATA-89547 - pausing running airflow 1 dags at midnight"
+import logging
 from datetime import datetime
 from typing import List
 
 import requests
 from pydantic import BaseModel
-from rich import print
+
+logging.basicConfig(level=logging.INFO)
 
 headers = {"Cache-Control": "no-cache", "Content-Type": "application/json"}
-endpoint = "latest_runs"
+AIRFLOW_URL = "http://localhost:8081"
 
 
 class DagRunItem(BaseModel):
@@ -21,52 +22,60 @@ class LatestRunsResponse(BaseModel):
     items: List[DagRunItem]
 
 
-# get the list of dags using the experimental airflow 1 api
-r_dags = requests.get(
-    "http://localhost:8081/api/experimental/latest_runs", headers=headers
-)
-
-# make pydantic model from the response
-dags = LatestRunsResponse(**r_dags.json())
-
-print(dags)
-
-
 class DagPausedStatus(BaseModel):
     is_paused: bool
     dag_id: str
 
 
-dags_with_status = []
-# loop through dags and get the paused status of each dag
-for dag in dags.items:
-    r = requests.get(
-        f"http://localhost:8081/api/experimental/dags/{dag.dag_id}/paused",
-        headers=headers,
+def get_dags():
+    logging.info("Fetching DAGs...")
+    response = requests.get(
+        f"{AIRFLOW_URL}/api/experimental/latest_runs", headers=headers
     )
-    # make DagPausedStatus model from the response
-    # and print the result
-    o = DagPausedStatus(is_paused=r.json()["is_paused"], dag_id=dag.dag_id)
-    print(o)
-    dags_with_status.append(o)
+    response.raise_for_status()
+    return LatestRunsResponse(**response.json()).items
 
-# make a list of all the dags that are not paused
-not_paused = [dag for dag in dags_with_status if not dag.is_paused]
 
-# paused all not_paused dags
-for dag in not_paused:
-    r = requests.get(
-        f"http://localhost:8081/api/experimental/dags/{dag.dag_id}/paused/true",
-        headers=headers,
+def get_dag_status(dag_id):
+    logging.info(f"Fetching status for DAG: {dag_id}")
+    response = requests.get(
+        f"{AIRFLOW_URL}/api/experimental/dags/{dag_id}/paused", headers=headers
     )
-    print(r.json())
+    response.raise_for_status()
+    return DagPausedStatus(is_paused=response.json()["is_paused"], dag_id=dag_id)
 
-input("enter to unapuse dags")
 
-# unpaused the dags that were paused
-for dag in not_paused:
-    r = requests.get(
-        f"http://localhost:8081/api/experimental/dags/{dag.dag_id}/paused/false",
-        headers=headers,
+def pause_dag(dag_id):
+    logging.info(f"Pausing DAG: {dag_id}")
+    response = requests.get(
+        f"{AIRFLOW_URL}/api/experimental/dags/{dag_id}/paused/true", headers=headers
     )
-    print(r.json())
+    response.raise_for_status()
+    return response.json()
+
+
+def unpause_dag(dag_id):
+    logging.info(f"Unpausing DAG: {dag_id}")
+    response = requests.get(
+        f"{AIRFLOW_URL}/api/experimental/dags/{dag_id}/paused/false", headers=headers
+    )
+    response.raise_for_status()
+    return response.json()
+
+
+def main():
+    dags = get_dags()
+    dags_with_status = [get_dag_status(dag.dag_id) for dag in dags]
+    not_paused = [dag for dag in dags_with_status if not dag.is_paused]
+
+    for dag in not_paused:
+        pause_dag(dag.dag_id)
+
+    input("Press enter to unpause dags")
+
+    for dag in not_paused:
+        unpause_dag(dag.dag_id)
+
+
+if __name__ == "__main__":
+    main()

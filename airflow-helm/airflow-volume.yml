@@ -12,7 +12,8 @@ spec:
     storage: 1Gi
   accessModes: [ReadWriteMany]
   hostPath:
-    path: /Users/npayne81/work/airflow-sandbox/airflow/example-dags
+    # TODO: You can probably just change `/npayne81/work` to wherever you cloned this repo
+    path: /Users/npayne81/work/airflow-sandbox/airflow-helm/example-dags
   persistentVolumeReclaimPolicy: Retain
 ---
 ### PersistentVolumeClaim  ###

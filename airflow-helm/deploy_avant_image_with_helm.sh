@@ -9,5 +9,4 @@ helm install \
     --namespace airflow \
     --version 1.11.0 \
     -f values.yaml \
-    --set dagProcessor.enabled=true \
     --wait=true

@@ -23,7 +23,7 @@ class LatestRunsResponse(BaseModel):
 
 # get the list of dags using the experimental airflow 1 api
 r_dags = requests.get(
-    "http://localhost:8082/api/experimental/latest_runs", headers=headers
+    "http://localhost:8081/api/experimental/latest_runs", headers=headers
 )
 
 # make pydantic model from the response
@@ -41,7 +41,7 @@ dags_with_status = []
 # loop through dags and get the paused status of each dag
 for dag in dags.items:
     r = requests.get(
-        f"http://localhost:8082/api/experimental/dags/{dag.dag_id}/paused",
+        f"http://localhost:8081/api/experimental/dags/{dag.dag_id}/paused",
         headers=headers,
     )
     # make DagPausedStatus model from the response
@@ -56,7 +56,7 @@ not_paused = [dag for dag in dags_with_status if not dag.is_paused]
 # paused all not_paused dags
 for dag in not_paused:
     r = requests.get(
-        f"http://localhost:8082/api/experimental/dags/{dag.dag_id}/paused/true",
+        f"http://localhost:8081/api/experimental/dags/{dag.dag_id}/paused/true",
         headers=headers,
     )
     print(r.json())
@@ -66,7 +66,7 @@ input("enter to unapuse dags")
 # unpaused the dags that were paused
 for dag in not_paused:
     r = requests.get(
-        f"http://localhost:8082/api/experimental/dags/{dag.dag_id}/paused/false",
+        f"http://localhost:8081/api/experimental/dags/{dag.dag_id}/paused/false",
         headers=headers,
     )
     print(r.json())

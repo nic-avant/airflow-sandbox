@@ -34,11 +34,16 @@ class DagPausedStatus(BaseModel):
     dag_id: str
 
 
+class PauseUnpauseResponse(BaseModel):
+    dag_id: str
+    response: str
+
+
 def sleep_decorator(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         result = func(*args, **kwargs)
-        time.sleep(1)
+        time.sleep(0.25)
         return result
 
     return wrapper
@@ -72,8 +77,7 @@ def pause_dag(dag_id):
         f"{AIRFLOW_URL}/api/experimental/dags/{dag_id}/paused/true", headers=headers
     )
     response.raise_for_status()
-    logging.info(f"{response.json()}")
-    return response.json()
+    return PauseUnpauseResponse(**response.json(), dag_id=dag_id)
 
 
 @sleep_decorator
@@ -83,8 +87,7 @@ def unpause_dag(dag_id):
         f"{AIRFLOW_URL}/api/experimental/dags/{dag_id}/paused/false", headers=headers
     )
     response.raise_for_status()
-    logging.info(f"{response.json()}")
-    return response.json()
+    return PauseUnpauseResponse(**response.json(), dag_id=dag_id)
 
 
 def main():
@@ -93,13 +96,18 @@ def main():
     not_paused = [dag for dag in dags_with_status if not dag.is_paused]
 
     for dag in not_paused:
-        pause_dag(dag.dag_id)
+        r = pause_dag(dag.dag_id)
+
+        logging.info(r)
 
     Prompt.ask("Press enter to unpause dags")
 
     for dag in not_paused:
-        unpause_dag(dag.dag_id)
+        r = unpause_dag(dag.dag_id)
+
+        logging.info(r)
 
 
 if __name__ == "__main__":
+    unpause_dag("tutorial")
     main()

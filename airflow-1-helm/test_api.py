@@ -1,3 +1,4 @@
+"Testing script for DATA-89547 - pausing running airflow 1 dags at midnight"
 from datetime import datetime
 from typing import List
 

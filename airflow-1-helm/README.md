@@ -1,1 +1,3 @@
-Just run ./deploy.sh to spin up airflow 1 in a namespace called `airflowone`
+Just run ./deploy.sh to spin up airflow 1 in a namespace called `airflowone` and wait for maybe a long time... race conditions in the airflow image cause the webserver to take kind of a long time to stand up...
+
+If you change things in `custom-values.yaml` then run `upgrade.sh`

@@ -1,5 +1,8 @@
 import json
 import logging
+import os
+import platform
+import socket
 import time
 from datetime import datetime
 from functools import wraps
@@ -8,7 +11,6 @@ from typing import List
 import requests
 from pydantic import BaseModel
 from rich.logging import RichHandler
-from rich.prompt import Prompt
 
 # Setup logging with Rich
 logging.basicConfig(
@@ -16,7 +18,22 @@ logging.basicConfig(
 )
 
 headers = {"Cache-Control": "no-cache", "Content-Type": "application/json"}
-AIRFLOW_URL = "http://localhost:8081"
+
+
+def is_docker():
+    # Check if the script is running inside a Docker container
+    return os.getenv("HOSTNAME", "").startswith("docker-")
+
+
+if is_docker():
+    # If the script is running inside a Docker container
+    AIRFLOW_URL = "http://host.docker.internal:8081"
+else:
+    # If the script is running on the host machine
+    if platform.system() == "Darwin":  # macOS
+        AIRFLOW_URL = "http://localhost:8081"
+    else:  # Linux
+        AIRFLOW_URL = f"http://{socket.gethostbyname(socket.gethostname())}:8081"
 
 
 class DagRunItem(BaseModel):
@@ -125,7 +142,9 @@ def main():
 
         logging.info(r)
 
-    Prompt.ask("Press enter to unpause dags")
+    # Prompt.ask("Press enter to unpause dags")
+    print("sleeping 10 seconds before unpausing")
+    time.sleep(10)
 
     for dag in not_paused:
         r = unpause_dag(dag.dag_id)
@@ -175,3 +194,8 @@ def lambda_handler(event, context):
             }
         ),
     }
+
+
+if __name__ == "__main__":
+    if not is_docker():
+        main()

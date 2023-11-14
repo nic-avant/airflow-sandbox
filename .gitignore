@@ -181,3 +181,4 @@ pyrightconfig.json
 *.pyc
 airflow/example-dags/__pycache__
 airflow-1-helm/PauseRunningAirflow1Dags/.aws-sam/cache
+*cache*

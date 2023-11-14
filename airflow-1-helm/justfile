@@ -1,13 +1,13 @@
 #!/usr/bin/env just --justfile
 
 build:
-  cd /Users/npayne81/work/airflow-sandbox/airflow-1-helm/MyLambdaFunction && sam build --use-container  && cd -
+  cd /Users/npayne81/work/airflow-sandbox/airflow-1-helm/PauseRunningAirflow1Dags && sam build --use-container  && cd -
 
 test:
-  cd /Users/npayne81/work/airflow-sandbox/airflow-1-helm/MyLambdaFunction && sam local invoke --docker-network host  && cd -
+  cd /Users/npayne81/work/airflow-sandbox/airflow-1-helm/PauseRunningAirflow1Dags && sam local invoke --docker-network host  && cd -
 
 build-and-test: build test
 
 test-api-locally:
     echo "Testing Airflow API running python locally"
-    /Users/npayne81/work/airflow-sandbox/.venv/airflow-sandbox/bin/python /Users/npayne81/work/airflow-sandbox/airflow-1-helm/MyLambdaFunction/hello_world/app.py
+    /Users/npayne81/work/airflow-sandbox/.venv/airflow-sandbox/bin/python /Users/npayne81/work/airflow-sandbox/airflow-1-helm/PauseRunningAirflow1Dags/pause_airflow_dags/app.py

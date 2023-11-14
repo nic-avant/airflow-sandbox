@@ -92,6 +92,17 @@ def get_dag_status(dag_id) -> DagPausedStatus:
 
 
 @sleep_decorator
+def get_non_paused_dags() -> List[DagPausedStatus]:
+    dags = get_dags()
+
+    dags_with_status = [get_dag_status(dag.get("dag_id")) for dag in dags]
+
+    non_paused_dags = [dag for dag in dags_with_status if not dag.is_paused]
+
+    return non_paused_dags
+
+
+@sleep_decorator
 def pause_dag(dag_id):
     """Set a DAG's paused status to True
 
@@ -127,7 +138,7 @@ def main():
 
     # Pause all non-paused DAGs
     for dag in non_paused_dags:
-        pause_dag(dag)
+        pause_dag(dag.dag_id)
 
     # Serialize the list of non-paused DAGs to JSON
     non_paused_dags_json = json.dumps([dag.__dict__ for dag in non_paused_dags])
@@ -137,6 +148,8 @@ def main():
         f.write(non_paused_dags_json)
 
     # TODO: should this be a seaprate cron job to unpause them?
+    print("sleeping 10 seconds before unpausing the dags again")
+    time.sleep(10)
 
     # Load the JSON from the file
     with open("dags.json", "r") as f:
@@ -144,7 +157,7 @@ def main():
 
     # Unpause the DAGs
     for dag in non_paused_dags:
-        unpause_dag(dag)
+        unpause_dag(dag.dag_id)
 
 
 if __name__ == "__main__":

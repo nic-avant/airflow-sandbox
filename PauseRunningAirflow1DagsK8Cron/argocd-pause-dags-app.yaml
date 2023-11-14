@@ -1,0 +1,17 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: pause-airflow1-dags
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/yourusername/yourrepo.git
+    targetRevision: HEAD
+    path: path/to/your/cronjob
+  destination:
+    namespace: your-target-namespace
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated: {}

@@ -14,4 +14,4 @@ test-dag-pauser-locally:
 
 test-dag-pauser-k8s-cron-locally:
     echo "Test app.py for cronjob"
-    /Users/npayne81/work/airflow-sandbox/.venv/airflow-sandbox/bin/python /Users/npayne81/work/airflow-sandbox/PauseRunningAirflow1DagsK8Cron/app.py
+    /Users/npayne81/work/airflow-sandbox/.venv/airflow-sandbox/bin/python /Users/npayne81/work/airflow-sandbox/

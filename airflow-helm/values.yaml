@@ -1,0 +1,63 @@
+---
+config:
+  webserver:
+    expose_config: 'True'
+executor: KubernetesExecutor
+webserverSecretKey: af67ea96c649d2448f86e6f0893e4f1f
+dags:
+  persistence:
+    # Enable persistent volume for storing dags
+    enabled: true
+    ## the name of an existing PVC to use (see airflow-volume.yml)
+    existingClaim: airflow-dags-pvc
+    ## optional subpath for dag volume mount
+    subPath:
+  gitSync:
+    enabled: false
+scheduler:
+  livenessProbe:
+    initialDelaySeconds: 10
+    timeoutSeconds: 600
+    failureThreshold: 20
+    periodSeconds: 60
+    command:
+      - sh
+      - -c
+      - |-
+        CONNECTION_CHECK_MAX_COUNT=0 AIRFLOW__LOGGING__LOGGING_LEVEL=ERROR exec /entrypoint \
+        airflow jobs check --job-type SchedulerJob --hostname $(hostname -i)
+images:
+  airflow:
+    # set at cli
+    repository: avant.jfrog.io/shared-images/avant-airflow
+    tag: dev
+    pullPolicy: IfNotPresent
+  # To avoid images with user code, you can turn this to 'true' and
+  # all the 'run-airflow-migrations' and 'wait-for-airflow-migrations' containers/jobs
+  # will use the images from 'defaultAirflowRepository:defaultAirflowTag' values
+  # to run and wait for DB migrations .
+  useDefaultImageForMigration: true
+  # timeout (in seconds) for airflow-migrations to complete
+  migrationsWaitTimeout: 120
+  #
+postgresql:
+  enabled: true
+# Add this section
+airflow:
+  extraInitContainers:
+    - name: init-admin
+      image: avant.jfrog.io/shared-images/avant-airflow:dev
+      command:
+        - bash
+        - -c
+        - airflow users  create --role Admin --username admin --email admin --firstname
+          admin --lastname admin --password admin
+    - name: init-db
+      image: avant.jfrog.io/shared-images/avant-airflow:dev
+      command: [bash, -c, airflow db init]
+createUserJob:
+  useHelmHooks: false
+  applyCustomEnv: false
+migrateDatabaseJob:
+  useHelmHooks: false
+  applyCustomEnv: false

@@ -1,3 +1,4 @@
+import json
 import logging
 import platform
 import time
@@ -121,23 +122,29 @@ def unpause_dag(dag_id):
 
 
 def main():
-    dags = get_dags()
-    dags_with_status = [get_dag_status(dag.get("dag_id")) for dag in dags]
-    not_paused = [dag for dag in dags_with_status if not dag.is_paused]
+    # Get all non-paused DAGs
+    non_paused_dags = get_non_paused_dags()
 
-    for dag in not_paused:
-        r = pause_dag(dag.dag_id)
+    # Pause all non-paused DAGs
+    for dag in non_paused_dags:
+        pause_dag(dag)
 
-        logging.info(r)
+    # Serialize the list of non-paused DAGs to JSON
+    non_paused_dags_json = json.dumps([dag.__dict__ for dag in non_paused_dags])
 
-    # Prompt.ask("Press enter to unpause dags")
-    print("sleeping 10 seconds before unpausing")
-    time.sleep(10)
+    # Write the JSON to a file
+    with open("dags.json", "w") as f:
+        f.write(non_paused_dags_json)
 
-    for dag in not_paused:
-        r = unpause_dag(dag.dag_id)
+    # TODO: should this be a seaprate cron job to unpause them?
 
-        logging.info(r)
+    # Load the JSON from the file
+    with open("dags.json", "r") as f:
+        non_paused_dags = [DagPausedStatus(**dag) for dag in json.loads(f.read())]
+
+    # Unpause the DAGs
+    for dag in non_paused_dags:
+        unpause_dag(dag)
 
 
 if __name__ == "__main__":

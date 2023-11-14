@@ -173,15 +173,6 @@ def lambda_handler(event, context):
 
         Return doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html
     """
-
-    # try:
-    #     ip = requests.get("http://checkip.amazonaws.com/")
-    # except requests.RequestException as e:
-    #     # Send some context about this error to Lambda Logs
-    #     print(e)
-
-    #     raise e
-
     unpause_dag("tutorial")
     main()
 
@@ -190,7 +181,6 @@ def lambda_handler(event, context):
         "body": json.dumps(
             {
                 "message": "Ran Pause/Unpause DAGs",
-                # "location": ip.text.replace("\n", "")
             }
         ),
     }

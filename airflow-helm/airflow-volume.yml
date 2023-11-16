@@ -10,7 +10,7 @@ spec:
   storageClassName: hostpath
   capacity:
     storage: 1Gi
-  accessModes: [ReadWriteOnce]
+  accessModes: [ReadWriteMany]
   hostPath:
     # TODO: You can probably just change `/npayne81/work` to wherever you cloned this repo
     path: /Users/npayne81/work/airflow-sandbox/airflow-helm/example-dags
@@ -25,7 +25,7 @@ metadata:
 spec:
   storageClassName: hostpath
   volumeName: airflow-dags
-  accessModes: [ReadWriteOnce]
+  accessModes: [ReadWriteMany]
   resources:
     requests:
       storage: 1Gi

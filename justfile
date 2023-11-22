@@ -28,6 +28,10 @@ deploy-airflow2:
 
 deploy-cronjob:
     cd /Users/npayne81/work/airflow-sandbox/PauseRunningAirflow1DagsK8Cron  && \
-    kubectl create configmap app-script --from-file=app.py && \
     kubectl create -f job/cronjob.yml && \
+    cd -
+
+update-cronjob:
+    cd /Users/npayne81/work/airflow-sandbox/PauseRunningAirflow1DagsK8Cron  && \
+    kubectl apply -f job/cronjob.yml && \
     cd -

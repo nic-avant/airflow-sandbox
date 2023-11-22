@@ -1,5 +1,0 @@
----
-apiVersion: v2
-name: pause-airflow1-dags
-description: A Helm chart for deploying an app to pause Airflow 1 dags every day
-version: 0.1.0

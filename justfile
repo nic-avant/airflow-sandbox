@@ -15,3 +15,19 @@ test-dag-pauser-locally:
 test-dag-pauser-k8s-cron-locally:
     echo "Test app.py for cronjob"
     /Users/npayne81/work/airflow-sandbox/.venv/airflow-sandbox/bin/python /Users/npayne81/work/airflow-sandbox/PauseRunningAirflow1DagsK8Cron/app.py
+
+deploy-airflow1:
+    cd /Users/npayne81/work/airflow-sandbox/airflow-1-helm/  && \
+    bash deploy_airflow1.sh && \
+    cd -
+
+deploy-airflow2:
+    cd /Users/npayne81/work/airflow-sandbox/airflow-helm/  && \
+    bash deploy_avant_image_with_helm.sh && \
+    cd -
+
+deploy-cronjob:
+    cd /Users/npayne81/work/airflow-sandbox/PauseRunningAirflow1DagsK8Cron  && \
+    kubectl create configmap app-script --from-file=app.py && \
+    kubectl create -f job/cronjob.yml && \
+    cd -

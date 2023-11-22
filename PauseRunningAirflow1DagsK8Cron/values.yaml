@@ -1,7 +1,0 @@
----
-image:
-  repository: AvantFinCo/data-pause-airflow1-dags
-  tag: latest
-  pullPolicy: Always
-schedule: 0 23 * * *
-restartPolicy: OnFailure

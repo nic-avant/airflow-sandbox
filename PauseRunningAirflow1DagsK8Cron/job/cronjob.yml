@@ -1,0 +1,30 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: pause-non-prod-airflow-dags
+spec:
+  # schedule: 0 23 * * *  # Run every day at 11 PM
+  # cron schedule to run every minute
+  schedule: '*/1 * * * *'
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: hello
+              image: python:3.10-slim-buster
+              imagePullPolicy: IfNotPresent
+              command:
+                - /bin/sh
+                - -c
+                - python3
+                - /scripts/app.py  # Update the path here
+              volumeMounts:
+                - name: app-script-volume
+                  mountPath: /scripts
+          volumes:
+            - name: app-script-volume
+              configMap:
+                name: app-script
+          restartPolicy: OnFailure

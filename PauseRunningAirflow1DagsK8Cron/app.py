@@ -147,17 +147,17 @@ def main():
     with open("dags.json", "w") as f:
         f.write(non_paused_dags_json)
 
-    # TODO: should this be a seaprate cron job to unpause them?
-    print("sleeping 10 seconds before unpausing the dags again")
-    time.sleep(10)
-
-    # Load the JSON from the file
-    with open("dags.json", "r") as f:
-        non_paused_dags = [DagPausedStatus(**dag) for dag in json.loads(f.read())]
-
-    # Unpause the DAGs
-    for dag in non_paused_dags:
-        unpause_dag(dag.dag_id)
+    # # TODO: should this be a seaprate cron job to unpause them?
+    # print("sleeping 10 seconds before unpausing the dags again")
+    # time.sleep(10)
+    #
+    # # Load the JSON from the file
+    # with open("dags.json", "r") as f:
+    #     non_paused_dags = [DagPausedStatus(**dag) for dag in json.loads(f.read())]
+    #
+    # # Unpause the DAGs
+    # for dag in non_paused_dags:
+    #     unpause_dag(dag.dag_id)
 
 
 if __name__ == "__main__":

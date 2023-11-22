@@ -13,18 +13,11 @@ spec:
         spec:
           containers:
             - name: hello
-              image: python:3.10-slim-buster
+              image: docker.io/library/local:pause-running-airflow-1-dags-k8-cron
               imagePullPolicy: IfNotPresent
               command:
                 - /bin/sh
                 - -c
                 - python3
-                - /scripts/app.py  # Update the path here
-              volumeMounts:
-                - name: app-script-volume
-                  mountPath: /scripts
-          volumes:
-            - name: app-script-volume
-              configMap:
-                name: app-script
+                - app.py
           restartPolicy: OnFailure

@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker build -t pause-running-airflow-1-dags-k8-cron .
+docker build -t local:pause-running-airflow-1-dags-k8-cron .

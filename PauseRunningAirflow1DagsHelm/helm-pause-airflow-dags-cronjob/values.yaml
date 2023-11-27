@@ -1,0 +1,10 @@
+---
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+jobs:
+  - name: pause-non-prod-airflow-dags
+    schedule: 0 23 * * *
+    image:
+      name: pause-dags
+      image: avant.jfrog.io/shared-images/pause-running-airflow-1-dags:latest
+      imagePullPolicy: IfNotPresent#

@@ -1,0 +1,13 @@
+---
+apiVersion: v2
+name: helm-pause-airflow-dags-cronjob
+description: A chart for cron jobs
+version: 1.0.1
+keywords:
+  - cron
+home: https://github.com/bambash
+sources:
+  - https://github.com/bambash
+maintainers:
+  - name: bambash
+    email: bambash256@gmail.com

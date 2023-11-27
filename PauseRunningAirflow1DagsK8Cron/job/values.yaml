@@ -1,0 +1,14 @@
+---
+# use with AvantFinCo/helm-charts/cronjob
+cronjobs:
+  - name: pause-non-prod-airflow-dags
+    schedule: 0 23 * * *
+    restartPolicy: OnFailure
+    containers:
+      - name: pause-dags
+        image: avant.jfrog.io/shared-images/pause-running-airflow-1-dags:latest
+        command:
+          - /bin/sh
+          - -c
+          - python3
+          - app.py
